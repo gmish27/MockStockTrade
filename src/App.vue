@@ -1,32 +1,72 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+  <div id="app" class="container">
+    <div class="content">
+      <div class="section">
+        
+        <!-- Pass router link :to as dynamic in header -->
+        <app-header></app-header>
+        <div class="section">
+          <transition name="slide-frame" mode="out-in" type="animation" appear>
+            <router-view></router-view>
+          </transition>
+        </div>
+        <app-footer></app-footer>
+        
+      </div>
     </div>
-    <router-view/>
   </div>
 </template>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import Header from './components/shared/Header';
+import Footer from './components/shared/Footer';
 
-#nav {
-  padding: 30px;
+export default {
+  name: 'App',
+  components: {
+    appHeader: Header,
+    appFooter: Footer,
+  }
 }
+</script>
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
+<style lang="less" scoped>
+  .section {
+    min-height: 70vh
+  }
 
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
+  .slide-frame {
+    &-enter {
+      opacity: 0;
+    }
+    &-enter-active {
+      animation: slide-in 700ms ease-out forwards;
+      transition: opacity 350ms
+    }
+    &-leave-active {
+      animation: slide-out 700ms ease-out forwards;
+      transition: opacity 500ms
+    }
+    &-leave-to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes slide-in {
+    from {
+      transform: translateY(20px)
+    }
+    to {
+      transform: translateY(0)
+    }
+  }
+
+  @keyframes slide-out {
+    from {
+      transform: translateY(0)
+    }
+    to {
+      transform: translateY(20px)
+    }
+  }
 </style>
