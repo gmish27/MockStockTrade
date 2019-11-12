@@ -5,7 +5,7 @@
                 <p>
                     <span class="is-size-5">{{ stockObj.name }} </span>
                     <span class="is-size-7">
-                        (Price: {{ stockObj.price }}<span v-show="stockObj.count"> | Quantity: {{ stockObj.count }}</span>)
+                        (Price: {{ stockObj.price }}<span v-show="stockObj.quantity"> | Quantity: {{ stockObj.quantity }}</span>)
                     </span>
                 </p>
             </div>
@@ -20,8 +20,8 @@
                     </div>
                     <div class="level-right">
                         <div class="level-item">
-                            <b-button type="is-success" @click="triggerStock">
-                                <slot></slot>
+                            <b-button :type="getButtonType" @click="triggerStock">
+                                {{ stockActionType }}
                             </b-button>
                         </div>
                     </div>
@@ -38,6 +38,10 @@ export default {
         stockObj: {
             type: Object,
             required: true
+        },
+        stockActionType: {
+            type: String,
+            required: true
         }
     },
     data() {
@@ -45,9 +49,15 @@ export default {
             quantity: '',
         }
     },
+    computed: {
+        getButtonType() {
+            return this.stockActionType === 'Buy' ? 'is-success' : 'is-danger'
+        }
+    },
     methods: {
         triggerStock() {
-            this.$emit('trigger-stock', this.quantity)
+            this.$emit('trigger-stock', this.quantity);
+            this.quantity = ''
         }
     }
 }

@@ -4,8 +4,8 @@
             v-for="stock in getHoldings"
             :key="stock.name"
             :stockObj="stock"
+            stockActionType="Sell"
             >
-            Sell
         </app-stock>
     </div>
 </template>

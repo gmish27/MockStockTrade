@@ -4,9 +4,9 @@
             v-for="stock in getAllStocks"
             :key="stock.name"
             :stockObj="stock"
+            stockActionType="Buy"
             @trigger-stock="buyStock(stock, $event)"
             >
-            Buy
         </app-stock>
     </div>
 </template>
@@ -27,9 +27,13 @@ export default {
     },
     methods: {
         buyStock(stock, quantity) {
-            this.$store.commit('buyStock', {
+            this.$store.dispatch('buyStock', {
                 stock,
-                quantity
+                quantity: parseInt(quantity)
+            });
+            this.$buefy.toast.open({
+                message: `Bought ${quantity} stocks of ${stock.name}`,
+                type: 'is-success'
             })
         }
     }

@@ -1,27 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import portfolio from './portfolio'
 
 Vue.use(Vuex)
-
-const portfolio = {
-	state: {
-		holdings: []
-	},
-	getters: {
-		getHoldings: state => state.holdings
-	},
-	mutations: {
-		buyStock(state, payload) {
-			state.holdings.push({
-				...payload.stock,
-				count: payload.quantity
-			})
-		}
-	},
-	actions: {
-		
-	}
-}
 
 export default new Vuex.Store({
 	strict: process.env.NODE_ENV !== 'production',
