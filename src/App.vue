@@ -1,20 +1,22 @@
 <template>
-  <div id="app" class="container">
-    <div class="content">
-      <div class="section">
-        
-        <!-- Pass router link :to as dynamic in header -->
-        <app-header></app-header>
-        <div class="section">
-          <transition name="slide-frame" mode="out-in" type="animation" appear>
-            <router-view></router-view>
-          </transition>
-        </div>
-        <app-footer></app-footer>
-        
-      </div>
-    </div>
-  </div>
+	<div id="app" class="container">
+		<div class="content">
+			<div class="section">
+			
+				<!-- Pass router link :to as dynamic in header -->
+				<app-header :headerLinks="headerLinks">
+					Funds: ${{ getMargin }}
+				</app-header>
+				<div class="section">
+					<transition name="slide-frame" mode="out-in" type="animation" appear>
+					<router-view></router-view>
+					</transition>
+				</div>
+				<app-footer></app-footer>
+			
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>
@@ -22,11 +24,26 @@ import Header from './components/shared/Header';
 import Footer from './components/shared/Footer';
 
 export default {
-  name: 'App',
-  components: {
-    appHeader: Header,
-    appFooter: Footer,
-  }
+	name: 'App',
+	data() {
+		return {
+			headerLinks: {
+			tag: "router-link",
+			home: {name: 'home'},
+			portfolio: {name: 'portfolio'},
+			stocks: {name: 'stocks'}
+			},
+		}
+	},
+	computed: {
+		getMargin() {
+			return this.$store.getters.getMargin
+		}
+	},
+	components: {
+		appHeader: Header,
+		appFooter: Footer,
+	}
 }
 </script>
 

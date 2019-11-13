@@ -14,10 +14,17 @@ export default new Vuex.Store({
 			{name: 'Apple', price: 150},
 			{name: 'Facebook', price: 170},
 			{name: 'Tesla', price: 350},
-		]
+		],
+		marginAvailable: 100
 	},
 	getters: {
-		getAllStocks: state => state.allStocks
+		getAllStocks: state => state.allStocks,
+		getMargin: state => state.marginAvailable,
+		
+		// Find a particular stock from all available stocks
+		getStockByName: state => payloadStock => {
+			return state.allStocks.findIndex(stock => stock.name === payloadStock.name);
+		}
 	},
 	mutations: {
 	},

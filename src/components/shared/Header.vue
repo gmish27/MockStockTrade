@@ -1,15 +1,15 @@
 <template>
     <b-navbar shadow type="is-light">
         <template slot="brand">
-            <b-navbar-item tag="router-link" :to="{ name: 'home' }">
+            <b-navbar-item :tag="headerLinks.tag" :to="headerLinks.home">
                 <span class="brand">PlayStock</span>
             </b-navbar-item>
         </template>
         <template slot="start">
-            <b-navbar-item tag="router-link" :to="{ name: 'portfolio' }">
+            <b-navbar-item :tag="headerLinks.tag" :to="headerLinks.portfolio">
                 Portfolio
             </b-navbar-item>
-            <b-navbar-item tag="router-link" :to="{ name: 'stocks' }">
+            <b-navbar-item :tag="headerLinks.tag" :to="headerLinks.stocks">
                 Stocks
             </b-navbar-item>
         </template>
@@ -37,7 +37,7 @@
                 </b-navbar-item>
             </b-navbar-dropdown>
             <b-navbar-item href="#">
-                Funds: $100
+                <slot></slot>
             </b-navbar-item>
         </template>
     </b-navbar>
@@ -45,7 +45,13 @@
 
 <script>
 export default {
-    name: 'appHeader'
+    name: 'appHeader',
+    props: {
+        headerLinks: {
+            type: Object,
+            required: true
+        }
+    }
 }
 </script>
 
