@@ -15,11 +15,13 @@ export default new Vuex.Store({
 			{name: 'Facebook', price: 170},
 			{name: 'Tesla', price: 350},
 		],
-		marginAvailable: 100
+		marginAvailable: 100.00,
+		canUserBuy: true
 	},
 	getters: {
 		getAllStocks: state => state.allStocks,
 		getMargin: state => state.marginAvailable,
+		getCanBuy: state => state.canUserBuy,
 		
 		// Find a particular stock from all available stocks
 		getStockByName: state => payloadStock => {
@@ -27,6 +29,15 @@ export default new Vuex.Store({
 		}
 	},
 	mutations: {
+		updateMargin: (state, payload) => {
+			const newMargin = state.marginAvailable - payload;
+			if (newMargin >= 0) {
+				state.marginAvailable = newMargin;
+				state.canUserBuy = true;
+			} else {
+				state.canUserBuy = false;
+			}
+		}
 	},
 	actions: {
 	},

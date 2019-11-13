@@ -5,7 +5,7 @@
                 <p>
                     <span class="is-size-5">{{ stockObj.name }} </span>
                     <span class="is-size-7">
-                        (Price: {{ stockObj.price }}<span v-show="stockObj.quantity"> | Quantity: {{ stockObj.quantity }}</span>)
+                        (Price: ${{ stockObj.price }}<span v-show="stockObj.quantity"> | Quantity: {{ stockObj.quantity }}</span>)
                     </span>
                 </p>
             </div>
@@ -13,7 +13,10 @@
                 <div class="level">
                     <div class="level-left">
                         <div class="level-item">
-                            <b-field>
+                            <b-field 
+                                :type="{'is-danger': inputIsEmpty}"
+                                :message="{'Enter valid input': inputIsEmpty}"
+                                >
                                 <b-input placeholder="Quantity" rounded type="Number" v-model="quantity"></b-input>
                             </b-field>
                         </div>
@@ -47,6 +50,7 @@ export default {
     data() {
         return {
             quantity: '',
+            inputIsEmpty: false
         }
     },
     computed: {
@@ -56,8 +60,13 @@ export default {
     },
     methods: {
         triggerStock() {
-            this.$emit('trigger-stock', this.quantity);
-            this.quantity = ''
+            if (this.quantity !== '') {
+                this.$emit('trigger-stock', this.quantity);
+                this.quantity = '',
+                this.inputIsEmpty = false
+            } else {
+                this.inputIsEmpty = true
+            }
         }
     }
 }
