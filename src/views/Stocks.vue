@@ -1,11 +1,11 @@
 <template>
     <div class="columns is-multiline">
         <app-stock
-            v-for="(stock, index) in getAllStocks"
+            v-for="stock in getAllStocks"
             :key="stock.name"
             :stockObj="stock"
             stockActionType="Buy"
-            @trigger-stock="buyStock(stock.name, index, $event)"
+            @trigger-stock="buyStock(stock, $event)"
             >
         </app-stock>
     </div>
@@ -26,13 +26,13 @@ export default {
         ])
     },
     methods: {
-        buyStock(stockName, index, quantity) {
+        buyStock(stock, quantity) {
             this.$store.dispatch('buyStock', {
-                index,
+                stock,
                 quantity: parseInt(quantity)
             });
             this.$buefy.toast.open({
-                message: `Bought ${quantity} stock(s) of ${stockName}`,
+                message: `Bought ${quantity} stock(s) of ${stock.name}`,
                 type: 'is-success'
             })
         }
