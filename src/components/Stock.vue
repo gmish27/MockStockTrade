@@ -13,11 +13,8 @@
                 <div class="level">
                     <div class="level-left">
                         <div class="level-item">
-                            <b-field 
-                                :type="{'is-danger': inputIsEmpty}"
-                                :message="{'Enter valid input': inputIsEmpty}"
-                                >
-                                <b-input placeholder="Quantity" rounded type="Number" v-model="quantity"></b-input>
+                            <b-field>
+                                <b-input placeholder="Quantity" rounded type="number" min="1" v-model="quantity"></b-input>
                             </b-field>
                         </div>
                     </div>
@@ -49,8 +46,8 @@ export default {
     },
     data() {
         return {
+            // Property to hold quantity of sotock
             quantity: '',
-            inputIsEmpty: false
         }
     },
     computed: {
@@ -61,11 +58,9 @@ export default {
     methods: {
         triggerStock() {
             if (this.quantity !== '') {
-                this.$emit('trigger-stock', this.quantity);
+                this.$emit('trigger-stock', parseInt(this.quantity));
                 this.quantity = '',
-                this.inputIsEmpty = false
-            } else {
-                this.inputIsEmpty = true
+                this.inputIsValid = false
             }
         }
     }

@@ -27,7 +27,7 @@ export default {
 	},
 	actions: {
 		// Payload contains stock object and quantity property
-		buyStock: ({commit, state, getters}, payload) => {
+		buyStock: ({commit, state, getters, rootGetters}, payload) => {
 			// Create a temp variable to hold current holdings
 			const _holdings = state.holdings;
 			// Check if stock bought from user already exists in portfolio
@@ -37,12 +37,19 @@ export default {
 				// No index found so add as new stock in portfolio
 				commit('buyNewStock', payload)
 			} else {
-				// Index found. Update stock with new quantity
-				const currentStockPosition = _holdings[index];
+				// Index found. Get the exact stock object
+				const portfoliotStock = _holdings[index];
+				// Get the current market price of the same stock
+				const marketStockPrice = rootGetters.getStockMarketPrice(portfoliotStock.name);
+
+				const totalStockQuantity = payload.quantity + portfoliotStock.quantity;
+				// Calculate weighted avg. price of the stock as per quantity and market price
+				const wAvgPrice = ((portfoliotStock.quantity * portfoliotStock.price) + (payload.quantity * marketStockPrice)) / totalStockQuantity;
 				commit('addToStock', {
 					stock: {
-						...payload.stock,
-						quantity: currentStockPosition.quantity + payload.quantity,
+						name: payload.stock.name,
+						price: wAvgPrice.toFixed(2),
+						quantity: totalStockQuantity,
 					},
 					index
 				})

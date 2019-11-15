@@ -37,7 +37,7 @@ export default {
             if (canBuy) {
                 this.$store.dispatch('buyStock', {
                     stock,
-                    quantity: parseInt(quantity)
+                    quantity
                 });
                 this.$buefy.toast.open({
                     message: `Bought ${quantity} stock(s) of ${stock.name}`,

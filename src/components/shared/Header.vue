@@ -6,10 +6,10 @@
             </b-navbar-item>
         </template>
         <template slot="start">
-            <b-navbar-item :tag="headerLinks.tag" :to="headerLinks.portfolio">
+            <b-navbar-item :tag="headerLinks.tag" :to="headerLinks.portfolio" :active="$route.path === '/portfolio'">
                 Portfolio
             </b-navbar-item>
-            <b-navbar-item :tag="headerLinks.tag" :to="headerLinks.stocks">
+            <b-navbar-item :tag="headerLinks.tag" :to="headerLinks.stocks" :active="$route.path === '/stocks'">
                 Stocks
             </b-navbar-item>
         </template>
@@ -25,7 +25,7 @@
                     </a>
                 </div>
             </b-navbar-item> -->
-            <b-navbar-item href="#">
+            <b-navbar-item @click.prevent="$emit('end-day')">
                 End Day
             </b-navbar-item>
             <b-navbar-dropdown hoverable label="Save & Load">
@@ -51,7 +51,7 @@ export default {
             type: Object,
             required: true
         }
-    }
+    },
 }
 </script>
 

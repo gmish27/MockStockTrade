@@ -4,12 +4,12 @@
 			<div class="section">
 			
 				<!-- Pass router link :to as dynamic in header -->
-				<app-header :headerLinks="headerLinks">
+				<app-header :headerLinks="headerLinks" @end-day="updateMarket">
 					Funds: ${{ getMargin }}
 				</app-header>
 				<div class="section">
 					<transition name="slide-frame" mode="out-in" type="animation" appear>
-					<router-view></router-view>
+						<router-view></router-view>
 					</transition>
 				</div>
 				<app-footer></app-footer>
@@ -28,16 +28,28 @@ export default {
 	data() {
 		return {
 			headerLinks: {
-			tag: "router-link",
-			home: {name: 'home'},
-			portfolio: {name: 'portfolio'},
-			stocks: {name: 'stocks'}
+				tag: "router-link",
+				home: {name: 'home'},
+				portfolio: {name: 'portfolio'},
+				stocks: {name: 'stocks'}
 			},
 		}
 	},
 	computed: {
 		getMargin() {
 			return this.$store.getters.getMargin
+		}
+	},
+	methods: {
+		updateMarket() {
+			this.$store.commit('updatePrices');
+			this.$buefy.notification.open({
+				message: 'New day at the Market for trading!',
+				type: 'is-info',
+				position: 'is-bottom-right',
+				hasIcon: true,
+				duration: 4000
+			})
 		}
 	},
 	components: {
