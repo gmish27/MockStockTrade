@@ -26,7 +26,7 @@ export default new Vuex.Store({
 	},
 	getters: {
 		getAllStocks: state => state.allStocks,
-		getMargin: state => state.marginAvailable,
+		getMargin: state => (state.marginAvailable).toFixed(2),
 		getCanBuy: state => state.canUserBuy,
 		
 		// Get current price of stock in market
@@ -38,7 +38,7 @@ export default new Vuex.Store({
 	mutations: {
 		// Update the funds available to user after a buy-order
 		updateMargin: (state, payload) => {
-			const newMargin = (state.marginAvailable - payload).toFixed(2);
+			const newMargin = (state.marginAvailable - payload);
 			if (newMargin >= 0) {
 				state.marginAvailable = newMargin;
 				state.canUserBuy = true;
@@ -50,11 +50,17 @@ export default new Vuex.Store({
 		updatePrices: (state) => {
 			state.allStocks.forEach(stock => {
 				const newPrice = stock.price - getRandomOffset();
-				stock.price = newPrice >= 0 ? newPrice : 0;
+				stock.price = newPrice >= 0 ? newPrice.toFixed(2) : 0;
 			})
 		}
 	},
 	actions: {
+		newDayAtMarket: ({commit, getters}) => {
+			// Update the market prices
+			commit('updatePrices');
+			// Update the profit/loss for scrips in portfolio
+			commit('updateProfit', getters.getStockMarketPrice);
+		}
 	},
 	modules: {
 		portfolio

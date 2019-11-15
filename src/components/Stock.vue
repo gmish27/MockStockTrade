@@ -1,6 +1,6 @@
 <template>
     <div class="column is-half">
-        <div class="message is-warning">
+        <div class="message" :class="{'is-danger': stockObj.profit === false, 'is-success': stockObj.profit === true}">
             <div class="message-header">
                 <p>
                     <span class="is-size-5">{{ stockObj.name }} </span>
@@ -14,7 +14,7 @@
                     <div class="level-left">
                         <div class="level-item">
                             <b-field>
-                                <b-input placeholder="Quantity" rounded type="number" min="1" v-model="quantity"></b-input>
+                                <b-input placeholder="Quantity" rounded type="number" min="1" :max="stockObj.quantity" v-model="quantity"></b-input>
                             </b-field>
                         </div>
                     </div>
@@ -61,3 +61,10 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+    div.message-header {
+        background-color: lightgrey;
+        color: black
+    }
+</style>

@@ -1,6 +1,7 @@
 export default {
 	state: {
-		holdings: []
+		holdings: [],
+		profit: 0
 	},
 	getters: {
 		// Return all portfolio holdings
@@ -8,14 +9,17 @@ export default {
 		// Return the array index of a a particular holding
 		getHoldingByName: (state) => (payloadStock) => {
 			return state.holdings.findIndex(stock => stock.name === payloadStock.name);
-		}
+		},
+		// Get realised profit/loss
+		getProfit: state => (state.profit).toFixed(2),
 	},
 	mutations: {
 		// Method to add a new stock in portfolio as per BUY quantity
 		buyNewStock: (state, payload) => {
 			state.holdings.push({
 				...payload.stock,
-				quantity: payload.quantity
+				quantity: payload.quantity,
+				profit: null
 			})
 		},
 		// Method to modify an existing stock in portfolio as per BUY quantity
@@ -23,6 +27,19 @@ export default {
 			state.holdings.splice(payload.index, 1, {
 				...payload.stock
 			})
+		},
+		// Update profit/loss for scrips in portfolio
+		updateProfit: (state, payloadFn) => {
+			state.holdings.forEach(portfolioStock => {
+				// Get the current market price of the same stock
+				const marketStockPrice = payloadFn(portfolioStock.name);
+				if (marketStockPrice > portfolioStock.price) {
+					// This means the scrip is trading at profit
+					portfolioStock.profit = true;
+				} else {
+					portfolioStock.profit = false;
+				}
+			});
 		}
 	},
 	actions: {
@@ -50,10 +67,11 @@ export default {
 						name: payload.stock.name,
 						price: wAvgPrice.toFixed(2),
 						quantity: totalStockQuantity,
+						profit: null
 					},
 					index
 				})
 			}
-		}
+		},
 	}
 }

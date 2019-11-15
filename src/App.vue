@@ -42,7 +42,7 @@ export default {
 	},
 	methods: {
 		updateMarket() {
-			this.$store.commit('updatePrices');
+			this.$store.dispatch('newDayAtMarket');
 			this.$buefy.notification.open({
 				message: 'New day at the Market for trading!',
 				type: 'is-info',
