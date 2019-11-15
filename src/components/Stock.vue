@@ -20,7 +20,7 @@
                     </div>
                     <div class="level-right">
                         <div class="level-item">
-                            <b-button :type="getButtonType" @click="triggerStock">
+                            <b-button type="is-primary" @click="triggerStock">
                                 {{ stockActionType }}
                             </b-button>
                         </div>
@@ -48,11 +48,6 @@ export default {
         return {
             // Property to hold quantity of sotock
             quantity: '',
-        }
-    },
-    computed: {
-        getButtonType() {
-            return this.stockActionType === 'Buy' ? 'is-success' : 'is-danger'
         }
     },
     methods: {
