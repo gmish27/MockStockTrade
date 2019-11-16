@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import { ToastProgrammatic as Toast } from 'buefy';
 import Stock from '../components/Stock';
 
 export default {
@@ -46,7 +47,7 @@ export default {
                 stock,
                 quantity
             });
-            this.$buefy.toast.open({
+            Toast.open({
                 message: `Sold ${quantity} stock(s) of ${stock.name}`,
                 type: 'is-success'
             })

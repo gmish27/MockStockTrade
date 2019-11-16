@@ -43,13 +43,6 @@ export default {
 	methods: {
 		updateMarket() {
 			this.$store.dispatch('newDayAtMarket');
-			this.$buefy.notification.open({
-				message: 'New day at the Market for trading!',
-				type: 'is-info',
-				position: 'is-bottom-right',
-				hasIcon: true,
-				duration: 4000
-			})
 		}
 	},
 	components: {

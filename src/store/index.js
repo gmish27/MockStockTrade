@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { getFixedFloat } from "./HelperFunctions";
-import { getRandomOffset } from "./HelperFunctions";
+import { getFixedFloat } from "./HelperFunctions"
+import { getRandomOffset } from "./HelperFunctions"
+import { NotificationProgrammatic as Notification } from 'buefy'
 import portfolio from './portfolio'
 
 Vue.use(Vuex)
@@ -60,6 +61,13 @@ export default new Vuex.Store({
 			commit('updatePrices');
 			// Update the profit/loss for scrips in portfolio
 			commit('updateProfit', getters.getStockMarketPrice);
+			Notification.open({
+				message: 'New day at the Market for trading!',
+				type: 'is-info',
+				position: 'is-bottom-right',
+				hasIcon: true,
+				duration: 4000
+			})
 		}
 	},
 	modules: {

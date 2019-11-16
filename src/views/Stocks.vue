@@ -12,8 +12,9 @@
 </template>
 
 <script>
+import { ToastProgrammatic as Toast } from 'buefy';
 import Stock from '../components/Stock';
-import { mapGetters } from 'vuex'
+import { mapGetters } from 'vuex';
 
 export default {
     name: 'appStocks',
@@ -39,12 +40,12 @@ export default {
                     stock,
                     quantity
                 });
-                this.$buefy.toast.open({
+                Toast.open({
                     message: `Bought ${quantity} stock(s) of ${stock.name}`,
                     type: 'is-success'
                 })
             } else {
-                this.$buefy.toast.open({
+                Toast.open({
                     message: 'Sorry! Not enough funds available.',
                     type: 'is-danger'
                 })
