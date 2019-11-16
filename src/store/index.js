@@ -1,8 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { getFixedFloat } from "./HelperFunctions"
-import { getRandomOffset } from "./HelperFunctions"
 import { NotificationProgrammatic as Notification } from 'buefy'
+import { getFixedFloat, getRandomOffset } from "./HelperFunctions"
 import portfolio from './portfolio'
 
 Vue.use(Vuex)
