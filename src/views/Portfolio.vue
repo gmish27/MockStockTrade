@@ -9,10 +9,11 @@
         </div>
         <div class="columns is-multiline" v-else>
             <app-stock
-                v-for="stock in getHoldings"
+                v-for="(stock, index) in getHoldings"
                 :key="stock.name"
                 :stockObj="stock"
                 stockActionType="Sell"
+                @trigger-stock="sellStock(stock, index, $event)"
                 >
             </app-stock>
         </div>
@@ -31,6 +32,24 @@ export default {
     computed: {
         getHoldings() {
             return this.$store.getters.getHoldings
+        }
+    },
+    methods: {
+        sellStock(stock, index, quantity) {
+            // Get total funds released by selling the selected quantity of stocks
+            const totalSell = (stock.price + stock.profit) * quantity;
+            // Update the margin available to user for next transaction as per totalSell
+            this.$store.commit('updateMargin', totalSell);
+
+            this.$store.dispatch('sellStock', {
+                index,
+                stock,
+                quantity
+            });
+            this.$buefy.toast.open({
+                message: `Sold ${quantity} stock(s) of ${stock.name}`,
+                type: 'is-success'
+            })
         }
     }
 }

@@ -1,6 +1,6 @@
 <template>
     <div class="column is-half">
-        <div class="message" :class="{'is-danger': stockObj.profit === false, 'is-success': stockObj.profit === true}">
+        <div class="message" :class="{'is-danger': stockObj.profit < 0, 'is-success': stockObj.profit > 0}">
             <div class="message-header">
                 <p>
                     <span class="is-size-5">{{ stockObj.name }} </span>
@@ -14,7 +14,17 @@
                     <div class="level-left">
                         <div class="level-item">
                             <b-field>
-                                <b-input placeholder="Quantity" rounded type="number" min="1" :max="stockObj.quantity" v-model="quantity"></b-input>
+                                <b-input 
+                                    placeholder="Quantity" 
+                                    rounded 
+                                    type="number" 
+                                    min="1" 
+                                    :max="stockObj.quantity" 
+                                    v-model="quantity"
+                                    class="input-width"
+                                    ref="inputQuantity"
+                                    >
+                                </b-input>
                             </b-field>
                         </div>
                     </div>
@@ -52,10 +62,10 @@ export default {
     },
     methods: {
         triggerStock() {
-            if (this.quantity !== '') {
+            const inputIsValid = this.$refs.inputQuantity.checkHtml5Validity();
+            if (this.quantity !== '' && inputIsValid) {
                 this.$emit('trigger-stock', parseInt(this.quantity));
-                this.quantity = '',
-                this.inputIsValid = false
+                this.quantity = ''
             }
         }
     }
@@ -66,5 +76,24 @@ export default {
     div.message-header {
         background-color: lightgrey;
         color: black
+    }
+
+    .input-width {
+        width: 230px
+    }
+</style>
+
+<style lang="less">
+    input {
+        &::-webkit-outer-spin-button,
+        &::-webkit-inner-spin-button {
+            /* display: none; <- Crashes Chrome on hover */
+            -webkit-appearance: none;
+            margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+        }
+
+        &[type=number] {
+            -moz-appearance: textfield; /* Firefox */
+        }
     }
 </style>

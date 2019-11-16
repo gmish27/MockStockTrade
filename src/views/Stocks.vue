@@ -30,7 +30,7 @@ export default {
             // Get total cost of buying the selected quantity of stocks
             const totalCost = stock.price * quantity;
             // Update the margin available to user for next transaction as per totalCost
-            this.$store.commit('updateMargin', totalCost);
+            this.$store.commit('updateMargin', -totalCost);
             // Check if user is trying to buy as per available funds in account
             const canBuy = this.$store.getters.getCanBuy;
 

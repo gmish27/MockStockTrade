@@ -1,13 +1,10 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import { getFixedFloat } from "./HelperFunctions";
+import { getRandomOffset } from "./HelperFunctions";
 import portfolio from './portfolio'
 
 Vue.use(Vuex)
-
-const getRandomOffset= function() {
-	// Get a random number between -10 and 10
-	return (Math.random()*(-20) + 10).toFixed(2);
-};
 
 export default new Vuex.Store({
 	strict: process.env.NODE_ENV !== 'production',
@@ -26,7 +23,9 @@ export default new Vuex.Store({
 	},
 	getters: {
 		getAllStocks: state => state.allStocks,
-		getMargin: state => (state.marginAvailable).toFixed(2),
+
+		getMargin: state => getFixedFloat(state.marginAvailable),
+
 		getCanBuy: state => state.canUserBuy,
 		
 		// Get current price of stock in market
@@ -38,7 +37,7 @@ export default new Vuex.Store({
 	mutations: {
 		// Update the funds available to user after a buy-order
 		updateMargin: (state, payload) => {
-			const newMargin = (state.marginAvailable - payload);
+			const newMargin = (state.marginAvailable + payload);
 			if (newMargin >= 0) {
 				state.marginAvailable = newMargin;
 				state.canUserBuy = true;
@@ -46,11 +45,12 @@ export default new Vuex.Store({
 				state.canUserBuy = false;
 			}
 		},
+		
 		// Update the prices of the stock for a new trading day
 		updatePrices: (state) => {
 			state.allStocks.forEach(stock => {
 				const newPrice = stock.price - getRandomOffset();
-				stock.price = newPrice >= 0 ? newPrice.toFixed(2) : 0;
+				stock.price = newPrice >= 0 ? getFixedFloat(newPrice) : 0;
 			})
 		}
 	},
