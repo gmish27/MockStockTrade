@@ -30,7 +30,7 @@
                     </div>
                     <div class="level-right">
                         <div class="level-item">
-                            <b-button type="is-primary" @click="triggerStock">
+                            <b-button type="is-primary" @click="triggerStock" :disabled="quantity === ''">
                                 {{ stockActionType }}
                             </b-button>
                         </div>
