@@ -37,4 +37,8 @@ export default {
     #offset-text {
         margin-left: 1rem
     }
+
+    .box {
+        box-shadow: 0 .5em 1em -.125em rgba(10,10,10,.1),0 0 0 1px rgba(10,10,10,.02);
+    }
 </style>
