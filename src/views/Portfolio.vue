@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="box has-text-centered" v-if="getHoldings.length === 0">
+        <div class="box has-text-centered" v-if="!getHoldings.length">
             <p class="title">No Stocks in your Portfolio!</p>
             <p class="subtitle">
                 <router-link class="button is-success" :to="{name: 'stocks'}">Click</router-link>

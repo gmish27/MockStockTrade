@@ -2,7 +2,8 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { NotificationProgrammatic as Notification } from 'buefy'
 import { getFixedFloat, getRandomOffset } from "./HelperFunctions"
-import portfolio from './portfolio'
+import portfolio from './modules/portfolio'
+import user from './modules/user'
 
 Vue.use(Vuex)
 
@@ -70,6 +71,7 @@ export default new Vuex.Store({
 		}
 	},
 	modules: {
-		portfolio
+		portfolio,
+		user
 	}
 })

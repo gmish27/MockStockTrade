@@ -2,14 +2,30 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import { Navbar, Input, Button, Field, Notification } from "buefy";
+import { 
+  Navbar, 
+  Input, 
+  Button, 
+  Field, 
+  Notification, 
+  Tabs,
+  Checkbox,
+  Modal
+} from "buefy";
 import 'buefy/dist/buefy.min.css'
+import VueAxiosPlugin from './http'
 
 Vue.use(Navbar)
 Vue.use(Field)
 Vue.use(Input)
 Vue.use(Button)
 Vue.use(Notification)
+Vue.use(Tabs)
+Vue.use(Checkbox)
+Vue.use(Modal)
+Vue.use(VueAxiosPlugin, {
+  baseURL: 'https://playstock-6f244.firebaseio.com/'
+})
 Vue.config.productionTip = false
 
 new Vue({

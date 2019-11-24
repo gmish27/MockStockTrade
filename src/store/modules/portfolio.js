@@ -1,4 +1,4 @@
-import { getFixedFloat } from "./HelperFunctions";
+import { getFixedFloat } from "../HelperFunctions";
 
 export default {
 	state: {

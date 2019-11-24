@@ -10,6 +10,7 @@
                 </p>
             </div>
             <div class="message-body">
+                <form action="" @submit.prevent="triggerStock">
                 <div class="level">
                     <div class="level-left">
                         <div class="level-item">
@@ -22,7 +23,6 @@
                                     :max="stockObj.quantity" 
                                     v-model="quantity"
                                     class="input-width"
-                                    ref="inputQuantity"
                                     >
                                 </b-input>
                             </b-field>
@@ -30,12 +30,13 @@
                     </div>
                     <div class="level-right">
                         <div class="level-item">
-                            <b-button type="is-primary" @click="triggerStock" :disabled="quantity === ''">
+                            <b-button type="is-primary" native-type="submit" :disabled="!quantity">
                                 {{ stockActionType }}
                             </b-button>
                         </div>
                     </div>
                 </div>
+                </form>
             </div>
         </div>
     </div>
@@ -57,16 +58,13 @@ export default {
     data() {
         return {
             // Property to hold quantity of sotock
-            quantity: '',
+            quantity: null,
         }
     },
     methods: {
-        triggerStock() {
-            const inputIsValid = this.$refs.inputQuantity.checkHtml5Validity();
-            if (this.quantity !== '' && inputIsValid) {
-                this.$emit('trigger-stock', parseInt(this.quantity));
-                this.quantity = ''
-            }
+        triggerStock() {            
+            this.$emit('trigger-stock', parseInt(this.quantity));
+            this.quantity = null            
         }
     }
 }

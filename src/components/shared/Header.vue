@@ -6,10 +6,10 @@
             </b-navbar-item>
         </template>
         <template slot="start">
-            <b-navbar-item :tag="headerLinks.tag" :to="headerLinks.portfolio" :active="$route.path === '/portfolio'">
+            <b-navbar-item :tag="headerLinks.tag" :to="headerLinks.portfolio" :active="$route.path === '/portfolio'" class="has-text-link">
                 Portfolio
             </b-navbar-item>
-            <b-navbar-item :tag="headerLinks.tag" :to="headerLinks.stocks" :active="$route.path === '/stocks'">
+            <b-navbar-item :tag="headerLinks.tag" :to="headerLinks.stocks" :active="$route.path === '/stocks'" class="has-text-link">
                 Stocks
             </b-navbar-item>
         </template>
@@ -25,18 +25,26 @@
                     </a>
                 </div>
             </b-navbar-item> -->
-            <b-navbar-item @click.prevent="$emit('end-day')">
-                End Day
+            <b-navbar-item tag ="div">
+                <a class="button is-primary is-outlined" @click.prevent="$emit('end-day')">
+                    End Day
+                </a>                
             </b-navbar-item>
+        </template>
+
+        <template slot="end">
             <b-navbar-dropdown hoverable label="Save & Load">
-                <b-navbar-item href="#">
+                <b-navbar-item @click.prevent="$emit('save-data')" class="has-text-link">
                     Save Data
                 </b-navbar-item>
-                <b-navbar-item href="#">
+                <b-navbar-item @click.prevent="$emit('load-data')" class="has-text-link">
                     Load Data
                 </b-navbar-item>
             </b-navbar-dropdown>
-            <b-navbar-item href="#">
+        </template>
+
+        <template slot="end">
+            <b-navbar-item tag="div">
                 <slot></slot>
             </b-navbar-item>
         </template>
