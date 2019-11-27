@@ -104,8 +104,9 @@ export default {
                             userName,
                             uid,
                             token,
-                            expiration: resp.data.expiresIn
-                        },                        
+                        },
+                        // Set expiration time in msec
+                        expiration: resp.data.expiresIn * 1000,
                         // Save user refresh token iff user wants to be remembered
                         refreshToken: this.remember ? resp.data.refreshToken : null,
                     });

@@ -24,7 +24,9 @@ Vue.use(Tabs)
 Vue.use(Checkbox)
 Vue.use(Modal)
 Vue.use(VueAxiosPlugin, {
-  baseURL: 'https://playstock-6f244.firebaseio.com/'
+  baseURL: 'https://playstock-6f244.firebaseio.com/',
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN',
 })
 Vue.config.productionTip = false
 

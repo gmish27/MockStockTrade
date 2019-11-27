@@ -92,6 +92,9 @@ export default {
 			this.isLoginModalActive = false
 		}
 	},
+	created() {
+		this.$store.dispatch('autoLogout', this);
+	},
 	components: {
 		appHeader: Header,
 		appFooter: Footer,
