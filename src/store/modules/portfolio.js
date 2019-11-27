@@ -20,7 +20,7 @@ export default {
 	mutations: {
 		// Initialize portfolio from saved data
 		initPortfolio: (state, portfolioData) => {
-			state.holdings = portfolioData.holdings;
+			state.holdings = portfolioData.holdings || [];
 			state.realisedProfit = portfolioData.realisedProfit
 		},
 
