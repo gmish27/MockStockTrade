@@ -30,7 +30,7 @@
             aria-modal
             scroll="keep"
             >
-            <app-login @on-login="loginUser"></app-login>
+            <app-login></app-login>
         </b-modal>
 
 	</div>
@@ -68,28 +68,22 @@ export default {
 		// Save the current portfolio and market data for registered user
 		saveData() {
 			if (this.$store.getters.getUserStatus) {
-				return
+				// Write the current data: portfolio + market state
+				this.$store.dispatch('saveTradeData', this);				
 			} else {
 				// Prompt user to login
 				this.isLoginModalActive = true
-				// Listen to submit event from modal and dispatch login action in store
 			}
 			
 		},
 		// Load the current portfolio and market data for registered user
 		loadData() {
 			if (this.$store.getters.getUserStatus) {
-				return
+				this.$store.dispatch('loadTradeData', this);				
 			} else {
 				// Prompt user to login
 				this.isLoginModalActive = true
-				// Listen to submit event from modal and dispatch login action in store
 			}
-		},
-		loginUser(userData) {
-			// Dispatch action to login the user
-			window.console.log(userData);
-			this.isLoginModalActive = false
 		}
 	},
 	created() {

@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { NotificationProgrammatic as Notification } from 'buefy'
+import { LoadingProgrammatic as Loading } from 'buefy'
 import { getFixedFloat, getRandomOffset } from "./HelperFunctions"
 import portfolio from './modules/portfolio'
 import user from './modules/user'
@@ -36,6 +37,13 @@ export default new Vuex.Store({
 		}
 	},
 	mutations: {
+		// Initialize market data using saved market state
+		initMarket: (state, marketData) => {
+			state.allStocks = marketData.allStocks;
+			state.marginAvailable = marketData.marginAvailable;
+			state.canUserBuy = marketData.canUserBuy;
+		},
+
 		// Update the funds available to user after a buy-order
 		updateMargin: (state, payload) => {
 			const newMargin = (state.marginAvailable + payload);
@@ -68,6 +76,94 @@ export default new Vuex.Store({
 				hasIcon: true,
 				duration: 4000
 			})
+		},
+
+		resetTradeData: ({commit}) => {
+			const market = {
+				allStocks: [],
+				marginAvailable: 100.00,
+				canUserBuy: true
+			};
+			const portfolio = {
+				holdings: [],
+				realisedProfit: 0
+			};
+			
+			commit('initMarket', market);
+			commit('initPortfolio', portfolio);
+			commit('logoutUser');
+		},
+
+		saveTradeData: ({getters}, vueInstance) => {
+			const loader = Loading.open();
+			const market = {
+				allStocks: getters.getAllStocks,
+				marginAvailable: getters.getMargin,
+				canUserBuy: getters.canUserBuy
+			};
+
+			const portfolio = {
+				holdings: getters.getHoldings,
+				realisedProfit: getters.getProfit
+			};
+
+			const userId = getters.getUserUid;
+			const userToken = getters.getAuthToken;
+
+			vueInstance.$http.put(`/users/${userId}/tradeData.json?auth=${userToken}`, {market, portfolio})
+				.then(() => {
+					loader.close();
+					Notification.open({
+						message: 'Trade Data Saved.',
+						type: 'is-info',
+						position: 'is-bottom-right',
+						hasIcon: true,
+						duration: 4000
+					})
+				})
+				.catch(err => {
+					loader.close();
+					const errMsg = err.response.data.error.message;
+					Notification.open({
+						message: `Server Error: ${errMsg}`,
+						type: 'is-danger',
+						position: 'is-bottom-right',
+						hasIcon: true,
+						duration: 4000
+					})
+				})
+		},
+
+		loadTradeData: ({commit, getters}, vueInstance) => {
+			const loader = Loading.open();
+			const userId = getters.getUserUid;
+			const userToken = getters.getAuthToken;
+
+			vueInstance.$http.get(`/users/${userId}/tradeData.json?auth=${userToken}`)
+				.then(resp => {
+					commit('initMarket', resp.data.market);
+					commit('initPortfolio', resp.data.portfolio)
+					
+					Notification.open({
+						message: 'Trade Data Loaded.',
+						type: 'is-info',
+						position: 'is-bottom-right',
+						hasIcon: true,
+						duration: 4000
+					});
+					loader.close();
+				})
+				.catch(err => {
+					loader.close();
+					const errMsg = err.response.data.error.message;
+					Notification.open({
+						message: `Server Error: ${errMsg}`,
+						type: 'is-danger',
+						position: 'is-bottom-right',
+						hasIcon: true,
+						duration: 4000
+					})
+				})
 		}
 	},
 	modules: {

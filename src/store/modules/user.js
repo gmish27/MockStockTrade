@@ -42,7 +42,7 @@ export default {
             }
         },
 
-        autoLogout: ({commit, getters, dispatch}, vueInstance) => {
+        autoLogout: ({getters, dispatch, rootDispatch}, vueInstance) => {
             // If no user is in localStorage do nothing
             if (!getters.getUserStatus) {
                 return;
@@ -65,7 +65,7 @@ export default {
             
             // If token has already expired, logout the user
             if (isTimeLeft < 0) {
-                commit('logoutUser');
+                rootDispatch('resetTradeData');
                 Notification.open({
                     message: 'You have been logged out!',
                     type: 'is-info',
@@ -80,7 +80,7 @@ export default {
             }
         },
 
-        refreshLogin: ({commit, getters}, vueInstance) => {
+        refreshLogin: ({commit, getters, rootDispatch}, vueInstance) => {
             const data = `grant_type=refresh_token&refresh_token=${getters.getRefreshToken}`;
             const reqOptions = {
                headers: {
@@ -107,11 +107,11 @@ export default {
                         hasIcon: true,
                         duration: 4000
                     });
-                    commit('logoutUser');
+                    rootDispatch('resetTradeData');
                 });
         },
 
-        launchTimer: ({commit}, timePeriod) => {
+        launchTimer: ({rootDispatch}, timePeriod) => {
             // Warn the user about mins left before logging out
             const warnTime = (timePeriod - 300*1000) > 0 ? 5 : Math.floor(timePeriod/60000);
             const bufferTime = warnTime*60*1000;
@@ -124,7 +124,7 @@ export default {
                     duration: 4000
                 });
                 setTimeout(() => {
-                    commit('logoutUser');
+                    rootDispatch('resetTradeData');
                 }, bufferTime);
             }, (timePeriod - bufferTime));
         }

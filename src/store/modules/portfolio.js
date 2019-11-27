@@ -18,6 +18,12 @@ export default {
 		getProfit: state => getFixedFloat(state.realisedProfit),
 	},
 	mutations: {
+		// Initialize portfolio from saved data
+		initPortfolio: (state, portfolioData) => {
+			state.holdings = portfolioData.holdings;
+			state.realisedProfit = portfolioData.realisedProfit
+		},
+
 		// Method to add a new stock in portfolio as per BUY quantity
 		buyNewStock: (state, payload) => {
 			state.holdings.push({
