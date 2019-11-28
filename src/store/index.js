@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import { NotificationProgrammatic as Notification } from 'buefy'
 import { LoadingProgrammatic as Loading } from 'buefy'
 import { getFixedFloat, getRandomOffset, stockList } from "./HelperFunctions"
+import {dataHttp} from '@/http';
 import portfolio from './modules/portfolio'
 import user from './modules/user'
 
@@ -12,7 +13,7 @@ export default new Vuex.Store({
 	strict: process.env.NODE_ENV !== 'production',
 	state: {
 		// Represents market state
-		allStocks: stockList,
+		allStocks: Array.from(stockList, obj => Object.assign({}, obj)),
 		marginAvailable: 100.00,
 		canUserBuy: true
 	},
@@ -73,7 +74,7 @@ export default new Vuex.Store({
 
 		resetTradeData: ({commit}) => {
 			const market = {
-				allStocks: stockList,
+				allStocks: Array.from(stockList, obj => Object.assign({}, obj)),
 				marginAvailable: 100.00,
 				canUserBuy: true
 			};
@@ -87,7 +88,7 @@ export default new Vuex.Store({
 			commit('logoutUser');
 		},
 
-		saveTradeData: ({getters}, vueInstance) => {
+		saveTradeData: ({getters}) => {
 			const loader = Loading.open();
 			const market = {
 				allStocks: getters.getAllStocks,
@@ -103,7 +104,7 @@ export default new Vuex.Store({
 			const userId = getters.getUserUid;
 			const userToken = getters.getAuthToken;
 
-			vueInstance.$http.put(`/users/${userId}/tradeData.json?auth=${userToken}`, {market, portfolio})
+			dataHttp.put(`/users/${userId}/tradeData.json?auth=${userToken}`, {market, portfolio})
 				.then(() => {
 					loader.close();
 					Notification.open({
@@ -127,12 +128,12 @@ export default new Vuex.Store({
 				})
 		},
 
-		loadTradeData: ({commit, getters}, vueInstance) => {
+		loadTradeData: ({commit, getters}) => {
 			const loader = Loading.open();
 			const userId = getters.getUserUid;
 			const userToken = getters.getAuthToken;
 
-			vueInstance.$http.get(`/users/${userId}/tradeData.json?auth=${userToken}`)
+			dataHttp.get(`/users/${userId}/tradeData.json?auth=${userToken}`)
 				.then(resp => {
 					commit('initMarket', resp.data.market);
 					commit('initPortfolio', resp.data.portfolio)

@@ -1,5 +1,6 @@
 import { NotificationProgrammatic as Notification } from 'buefy';
 import firebaseConfig from '@/fbase';
+import {authHttp, dataHttp, API_KEY} from '@/http';
 
 export default {
     state: {
@@ -25,21 +26,73 @@ export default {
         }
     },
     actions: {
-        loginUser: ({commit, dispatch}, authData) => {
-            const currentTimestamp = new Date();
-            
-            // Storing token expiry in msec
-            const expirationTime = authData.refreshToken ? authData.expiration : (currentTimestamp.getTime() + authData.expiration);
-            commit('updateUser', {
-                ...authData.userData,
-                expiration: expirationTime,
-                refreshToken: authData.refreshToken
-            });
+        registerUser: (context, userData) => {
+            return new Promise((resolve, reject) => {
+                authHttp.post(`/v1/accounts:signUp?key=${API_KEY}`, {
+                    email: userData.email,
+                    password: userData.password,
+                    returnSecureToken: true
+                })
+                    .then(resp => {
+                        // Get UID of user to create primary key in db
+                        const uid = resp.data.localId;
+                        // Get JWT of user
+                        const tokenId = resp.data.idToken;
+    
+                        // Create an entry for the user in db
+                        dataHttp.put(`/users/${uid}.json?auth=${tokenId}`, {"name": userData.name})
+                            .then(() => resolve())
+                            .catch(err => {
+                                window.console.log(err.response)
+                                reject(err.response)
+                            });
+                    })
+                    .catch(err => reject(err.response));
+            })
+        },
 
-            if (!authData.refreshToken) {
-                // Auto logout with 5 mins of buffer if user did not check remember-me
-                dispatch('launchTimer', authData.expiration);
-            }
+        loginUser: ({commit, dispatch}, authData) => {
+            return new Promise((resolve, reject) => {
+                authHttp.post(`/v1/accounts:signInWithPassword?key=${API_KEY}`, {
+                    email: authData.email,
+                    password: authData.password,
+                    returnSecureToken: true
+                })
+                    .then(async (resp) => {
+                        const uid = resp.data.localId;
+                        const token = resp.data.idToken;
+                        // Get user name
+                        const userName = await dataHttp.get(`/users/${uid}/name.json?auth=${token}`)
+                            .then(resp => {
+                                resolve();
+                                return resp.data;
+                            })
+                            .catch(err => reject(err.response)); 
+                        
+                        // Set expiration time in msec
+                        const expiration = resp.data.expiresIn * 1000;
+                        // Save user refresh token iff user wants to be remembered
+                        const refreshToken = authData.remember ? resp.data.refreshToken : null;
+
+                        const currentTimestamp = new Date();            
+                        // Storing token expiry in msec
+                        const expirationTime = refreshToken ? expiration : (currentTimestamp.getTime() + expiration);
+                        commit('updateUser', {
+                            userName,
+                            uid,
+                            token,
+                            expiration: expirationTime,
+                            refreshToken
+                        });
+
+                        if (!refreshToken) {
+                            // Auto logout with 5 mins of buffer if user did not check remember-me
+                            dispatch('launchTimer', expiration);
+                        }
+
+                    })
+                    .catch(err => reject(err.response));
+            })
         },
 
         autoLogout: ({getters, dispatch, rootDispatch}, vueInstance) => {

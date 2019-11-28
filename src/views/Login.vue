@@ -9,7 +9,7 @@
                 <b-field label="Email">
                     <b-input
                         type="email"
-                        v-model="email"
+                        v-model="user.email"
                         placeholder="Your email"
                         required>
                     </b-input>
@@ -18,7 +18,7 @@
                 <b-field label="Password">
                     <b-input
                         type="password"
-                        v-model="password"
+                        v-model="user.password"
                         password-reveal
                         placeholder="Your password"
                         required>
@@ -26,7 +26,7 @@
                 </b-field>
 
                 <b-field>
-                    <b-checkbox v-model="remember">Remember me</b-checkbox>
+                    <b-checkbox v-model="user.remember">Remember me</b-checkbox>
                 </b-field>
 
                 <b-field>
@@ -54,15 +54,15 @@
 </template>
 
 <script>
-import firebaseConfig from '../fbase';
-
 export default {
     name: 'appLogin',
     data() {
         return {
-            email: null,
-            password: null,
-            remember: false,
+            user: {
+                email: null,
+                password: null,
+                remember: false,
+            },
             isLoading: false,
             notify: {
                 flag: false,
@@ -75,43 +75,8 @@ export default {
         onSubmit() {
             this.isLoading = true;
 
-            // One can create a different axios instance for AUTH and register in VUE to use here
-            this.$http.post(`${firebaseConfig.AUTH_URL}signInWithPassword?key=${firebaseConfig.API_KEY}`, {
-                email: this.email,
-                password: this.password,
-                returnSecureToken: true
-            })
-                .then(async (resp) => {
-                    const uid = resp.data.localId;
-                    const token = resp.data.idToken;
-                    // Get user name
-                    const userName = await this.$http.get(`/users/${uid}/name.json?auth=${token}`)
-                        .then(resp => resp.data)
-                        .catch(err => {
-                            window.console.log(err.response);
-                            this.isLoading = false;
-                            this.notify.class = "danger";
-                            this.notify.flag = true;
-                            this.notify.text = "Server ERROR!";
-                            setTimeout(() => {
-                                this.$parent.close();
-                            }, 2000);
-                        })
-
-                    // Dispatch the login action inside vuex store
-                    this.$store.dispatch('loginUser', {
-                        userData: {
-                            userName,
-                            uid,
-                            token,
-                        },
-                        // Set expiration time in msec
-                        expiration: resp.data.expiresIn * 1000,
-                        // Save user refresh token iff user wants to be remembered
-                        refreshToken: this.remember ? resp.data.refreshToken : null,
-                    });
-                    
-                    // Notify user about successfull login
+            this.$store.dispatch('loginUser', this.user)
+                .then(() => {
                     this.isLoading = false;
                     this.notify.class = "success";
                     this.notify.flag = true;
@@ -120,8 +85,8 @@ export default {
                         this.$parent.close();
                     }, 2000);
                 })
-                .catch(err => {
-                    const errMsg = err.response.data.error.message;
+                .catch(errResponse => {
+                    const errMsg = errResponse.data.error.message;
                     this.isLoading = false;
                     this.notify.class = "danger";
                     this.notify.flag = true;

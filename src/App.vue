@@ -69,7 +69,7 @@ export default {
 		saveData() {
 			if (this.$store.getters.getUserStatus) {
 				// Write the current data: portfolio + market state
-				this.$store.dispatch('saveTradeData', this);				
+				this.$store.dispatch('saveTradeData');				
 			} else {
 				// Prompt user to login
 				this.isLoginModalActive = true
@@ -79,7 +79,7 @@ export default {
 		// Load the current portfolio and market data for registered user
 		loadData() {
 			if (this.$store.getters.getUserStatus) {
-				this.$store.dispatch('loadTradeData', this);				
+				this.$store.dispatch('loadTradeData');				
 			} else {
 				// Prompt user to login
 				this.isLoginModalActive = true
