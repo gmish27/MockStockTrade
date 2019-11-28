@@ -1,6 +1,5 @@
 import { NotificationProgrammatic as Notification } from 'buefy';
-import firebaseConfig from '@/fbase';
-import {authHttp, dataHttp, API_KEY} from '@/http';
+import {authHttp, tokenHttp, dataHttp, API_KEY} from '@/http';
 
 export default {
     state: {
@@ -95,7 +94,7 @@ export default {
             })
         },
 
-        autoLogout: ({getters, dispatch, rootDispatch}, vueInstance) => {
+        autoLogout: ({getters, dispatch, rootDispatch}) => {
             // If no user is in localStorage do nothing
             if (!getters.getUserStatus) {
                 return;
@@ -104,11 +103,11 @@ export default {
             // If user has checked remember-me, refresh token and exit
             if (getters.getRefreshToken) {
                 // Refresh login immediately at page reload
-                dispatch('refreshLogin', vueInstance);
+                dispatch('refreshLogin');
 
                 // Refresh login in advance of 5 mins at expiry intervals when user is on the page
                 setInterval(() => {
-                    dispatch('refreshLogin', vueInstance);
+                    dispatch('refreshLogin');
                 }, getters.getLoginExpiry - 300*1000);                
                 return;
             }
@@ -133,14 +132,14 @@ export default {
             }
         },
 
-        refreshLogin: ({commit, getters, rootDispatch}, vueInstance) => {
+        refreshLogin: ({commit, getters, rootDispatch}) => {
             const data = `grant_type=refresh_token&refresh_token=${getters.getRefreshToken}`;
             const reqOptions = {
                headers: {
                    'Content-Type': 'application/x-www-form-urlencoded',
                 },
             };
-            vueInstance.$http.post(`https://securetoken.googleapis.com/v1/token?key=${firebaseConfig.API_KEY}`, data, reqOptions)
+            tokenHttp.post(`/v1/token?key=${API_KEY}`, data, reqOptions)
                 .then(resp => {
                     commit('updateUser', {
                         userName: getters.getUserName,

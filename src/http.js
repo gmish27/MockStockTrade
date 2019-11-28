@@ -8,6 +8,12 @@ export const authHttp = axios.create({
     xsrfHeaderName: 'X-XSRF-TOKEN',
 });
 
+export const tokenHttp = axios.create({
+    baseURL: 'https://securetoken.googleapis.com',
+    xsrfCookieName: 'XSRF-TOKEN',
+    xsrfHeaderName: 'X-XSRF-TOKEN',
+});
+
 export const dataHttp = axios.create({
     baseURL: 'https://playstock-6f244.firebaseio.com/',
     xsrfCookieName: 'XSRF-TOKEN',
